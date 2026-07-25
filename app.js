@@ -8,6 +8,8 @@ import userRoutes from "./src/modules/user/user.route.js";
 import connect from "./src/config/database.js";
 import authRoutes from "./src/modules/auth/auth.route.js";
 import noteRoutes from "./src/modules/note/note.route.js";
+import postRoutes from "./src/modules/post/post.route.js";
+
 const app = express();
 
 // Database Connection
@@ -26,6 +28,7 @@ app.use(morgan("combined", { stream: logger.stream }));
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/notes", noteRoutes);
+app.use("/api/v1/posts", postRoutes);
 
 // Health-check
 app.get("/health", (req, res) => {
