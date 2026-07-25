@@ -7,6 +7,7 @@ import logger from "./src/config/logger.js";
 import userRoutes from "./src/modules/user/user.route.js";
 import connect from "./src/config/database.js";
 import authRoutes from "./src/modules/auth/auth.route.js";
+import noteRoutes from "./src/modules/note/note.route.js";
 const app = express();
 
 // Database Connection
@@ -24,6 +25,7 @@ app.use(morgan("combined", { stream: logger.stream }));
 // Routing middleware
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/notes", noteRoutes);
 
 // Health-check
 app.get("/health", (req, res) => {
