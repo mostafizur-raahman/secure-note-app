@@ -21,20 +21,13 @@ export const updateMyProfileValidation = [
 
 export const createUserValidation = [
     body("name").trim().notEmpty().withMessage("Name is required"),
-    body("email")
-        .trim()
-        .isEmail()
-        .normalizeEmail()
-        .withMessage("Valid email is required"),
-    body("password")
-        .isLength({ min: 6 })
-        .withMessage("Password must be at least 6 characters"),
-    body("role")
+    body("email").trim().isEmail().normalizeEmail(),
+    body("password").isLength({ min: 6 }),
+    body("role").optional().isIn(Object.values(UserRole)),
+    body("interests")
         .optional()
-        .isIn(Object.values(UserRole))
-        .withMessage(
-            `Role must be one of: ${Object.values(UserRole).join(", ")}`,
-        ),
+        .isArray({ max: 100 })
+        .withMessage("Interests must be an array with max 15 items"),
 ];
 
 export const updateUserValidation = [

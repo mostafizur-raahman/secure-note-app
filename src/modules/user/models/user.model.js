@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
         role: { type: String, enum: UserRole, default: UserRole.User },
         interests: [{ type: String, trim: true }],
         isDeleted: { type: Boolean, default: false },
+        deletedAt: { type: Date, default: null },
     },
     { timestamps: true },
 );

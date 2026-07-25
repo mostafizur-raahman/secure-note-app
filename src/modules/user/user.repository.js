@@ -6,24 +6,37 @@ const createUser = async (userData) => {
 };
 
 const findUserByEmail = async (email) => {
-    return await userModel.findOne({ email }).select("+password");
+    return await userModel
+        .findOne({ email, isDeleted: false })
+        .select("+password");
 };
 
 const findUserById = async (id) => {
-    return await userModel.findById(id).select("-password");
+    return await userModel
+        .findOne({ _id: id, isDeleted: false })
+        .select("-password");
+};
+
+const findByIdWithoutPassword = async (id) => {
+    return await userModel
+        .findOne({ _id: id, isDeleted: false })
+        .select("-password");
 };
 
 const findAllUsers = async (filter = {}, query = {}) => {
     const { page, limit, skip } = getPagination(query);
 
+    // Always exclude soft-deleted users
+    const finalFilter = { ...filter, isDeleted: false };
+
     const [users, total] = await Promise.all([
         userModel
-            .find(filter)
+            .find(finalFilter)
             .select("-password")
             .sort(query.sort || "-createdAt")
             .skip(skip)
             .limit(limit),
-        userModel.countDocuments(filter),
+        userModel.countDocuments(finalFilter),
     ]);
 
     return {
@@ -32,25 +45,28 @@ const findAllUsers = async (filter = {}, query = {}) => {
     };
 };
 
-const findAllWithoutAdmin = async (query = {}) => {
-    return await findAllUsers({ role: { $ne: "ADMIN" } }, query);
-};
-
 const updateUserById = async (id, updateData) => {
     return await userModel
-        .findByIdAndUpdate(id, updateData, {
+        .findOneAndUpdate({ _id: id, isDeleted: false }, updateData, {
             new: true,
             runValidators: true,
         })
         .select("-password");
 };
 
-const findByIdWithoutPassword = async (id) => {
-    return await userModel.findById(id).select("-password");
+const deleteUserById = async (id) => {
+    return await userModel.findOneAndUpdate(
+        { _id: id, isDeleted: false },
+        { isDeleted: true, deletedAt: new Date() },
+        { new: true },
+    );
 };
 
-const deleteUserById = async (id) => {
-    return await userModel.findByIdAndDelete(id);
+const findAllWithoutAdmin = async (query = {}) => {
+    return await findAllUsers(
+        { role: { $ne: "ADMIN" }, isDeleted: false },
+        query,
+    );
 };
 
 const softDeleteUserById = async (id) => {

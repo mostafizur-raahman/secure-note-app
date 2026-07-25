@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { UserRole } from "../../utils/role.enum.js";
 
 const register = async (userData) => {
-    const { name, email, password, role } = userData;
+    const { name, email, password, role, interests } = userData;
 
     const existingUser = await userRepository.findUserByEmail(email);
     if (existingUser) {
@@ -18,6 +18,7 @@ const register = async (userData) => {
         email,
         password,
         role: role || UserRole.User,
+        ...(interests && { interests }),
     });
 
     return {
@@ -25,6 +26,7 @@ const register = async (userData) => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
+        interests: newUser.interests || [],
         createdAt: newUser.createdAt,
     };
 };
