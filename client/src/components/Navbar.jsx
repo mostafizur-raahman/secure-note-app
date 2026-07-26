@@ -1,4 +1,3 @@
-import React from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "../contexts/RouterContext";
 import Btn from "./ui/Button";
@@ -13,10 +12,11 @@ export default function Navbar() {
         navigate("login");
     };
 
-    // Nav items for pages that exist in this module
     const navItems = [
         { label: "Posts Feed", page: "home", adminOnly: false },
         { label: "Create Post", page: "create-post", adminOnly: false },
+        { label: "My Notes", page: "my-notes", adminOnly: false },
+        { label: "Create Note", page: "create-note", adminOnly: false },
     ];
 
     const visible = navItems.filter((i) => !i.adminOnly || isAdmin);
@@ -30,7 +30,6 @@ export default function Navbar() {
                         onClick={() => navigate("home")}>
                         Secure<span className="text-[#f97316]">Notes</span>
                     </span>
-                    {/* Desktop nav */}
                     <div className="hidden md:flex items-center gap-1">
                         {visible.map((i) => (
                             <Btn
@@ -48,7 +47,6 @@ export default function Navbar() {
                         ))}
                     </div>
                 </div>
-                {/* Right side */}
                 <div className="flex items-center gap-3">
                     <Badge variant={isAdmin ? "admin" : "user"}>
                         {user?.role === "ADMIN" ? "Admin" : "User"}
@@ -61,7 +59,6 @@ export default function Navbar() {
                     </Btn>
                 </div>
             </div>
-            {/* Mobile nav */}
             <div className="md:hidden px-4 pb-2 flex flex-wrap gap-1">
                 {visible.map((i) => (
                     <Btn

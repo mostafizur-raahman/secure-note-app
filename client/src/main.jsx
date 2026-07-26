@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react"; // ← keep for future pages
 import ReactDOM from "react-dom/client";
 import "./styles/index.css";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -12,11 +12,17 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import HomePage from "./pages/posts/HomePage";
 import CreatePostPage from "./pages/posts/CreatePostPage";
 import EditPostPage from "./pages/posts/EditPostPage";
+import MyNotesPage from "./pages/notes/MyNotesPage";
+import CreateNotePage from "./pages/notes/CreateNotePage";
+import EditNotePage from "./pages/notes/EditNotePage";
 
 const pageMap = {
     home: HomePage,
     "create-post": CreatePostPage,
     "edit-post": EditPostPage,
+    "my-notes": MyNotesPage,
+    "create-note": CreateNotePage,
+    "edit-note": EditNotePage,
 };
 
 function App() {

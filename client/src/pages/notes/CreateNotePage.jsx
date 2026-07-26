@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "../../contexts/RouterContext";
 import { useToast } from "../../contexts/ToastContext";
 import noteService from "../../services/noteService";
@@ -6,57 +6,33 @@ import Card from "../../components/ui/Card";
 import Btn from "../../components/ui/Button";
 import Field from "../../components/ui/Input";
 import Area from "../../components/ui/TextArea";
-import Spinner from "../../components/ui/Spinner";
 
-export default function EditNotePage() {
+export default function CreateNotePage() {
     const router = useRouter();
     const toast = useToast();
-    const noteId = router.params.noteId;
 
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-
-    useEffect(() => {
-        if (!noteId) {
-            router.navigate("my-notes");
-            return;
-        }
-        noteService
-            .get(noteId)
-            .then((response) => {
-                const note = response.data?.note || response.data || response;
-                setTitle(note.title || "");
-                setContent(note.content || "");
-                setLoading(false);
-            })
-            .catch((err) => {
-                toast.error(err.message);
-                router.navigate("my-notes");
-            });
-    }, [noteId]);
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSaving(true);
+        setLoading(true);
         try {
-            await noteService.update(noteId, { title, content });
-            toast.success("Note updated!");
+            await noteService.create({ title, content });
+            toast.success("Note created!");
             router.navigate("my-notes");
         } catch (err) {
             toast.error(err.message);
         } finally {
-            setSaving(false);
+            setLoading(false);
         }
     };
-
-    if (loading) return <Spinner />;
 
     return (
         <div className="max-w-2xl mx-auto px-4 py-6">
             <h2 className="text-xl font-semibold tracking-tight mb-6">
-                Edit Note
+                Create Note
             </h2>
             <Card>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -64,12 +40,14 @@ export default function EditNotePage() {
                         label="Title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Note title"
                         required
                     />
                     <Area
                         label="Content"
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
+                        placeholder="Write your note..."
                         rows={6}
                         required
                     />
@@ -79,8 +57,8 @@ export default function EditNotePage() {
                             onClick={() => router.navigate("my-notes")}>
                             Cancel
                         </Btn>
-                        <Btn variant="primary" disabled={saving} type="submit">
-                            {saving ? "Saving..." : "Save Changes"}
+                        <Btn variant="primary" disabled={loading} type="submit">
+                            {loading ? "Creating..." : "Create Note"}
                         </Btn>
                     </div>
                 </form>
