@@ -1,13 +1,12 @@
-import React from "react";
+import { createContext, useContext, useState } from "react";
 import authService from "../services/authService";
 
-const AuthContext = React.createContext();
+const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = React.useState(authService.getStoredUser());
-    const [loading, setLoading] = React.useState(false);
+    const [user, setUser] = useState(authService.getStoredUser());
+    const [loading, setLoading] = useState(false);
 
-    // Login response: { success, message, data: { token, user } }
     const login = async (email, password) => {
         setLoading(true);
         try {
@@ -16,7 +15,7 @@ export function AuthProvider({ children }) {
             const userData = response.data.user;
             authService.saveSession({ token, user: userData });
             setUser(userData);
-            return response;
+            return userData;
         } catch (err) {
             throw err;
         } finally {
@@ -24,12 +23,10 @@ export function AuthProvider({ children }) {
         }
     };
 
-    // Register does NOT return a token — just redirects to login
     const register = async (formData) => {
         setLoading(true);
         try {
             const response = await authService.register(formData);
-            // No token in register response, just return success
             return response;
         } catch (err) {
             throw err;
@@ -43,7 +40,6 @@ export function AuthProvider({ children }) {
         setUser(null);
     };
 
-    // Role is "ADMIN" or "USER" (uppercase)
     const isAdmin = user?.role === "ADMIN";
 
     return (
@@ -54,4 +50,4 @@ export function AuthProvider({ children }) {
     );
 }
 
-export const useAuth = () => React.useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

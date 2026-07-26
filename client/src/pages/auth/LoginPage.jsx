@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "../../contexts/RouterContext";
 import { useToast } from "../../contexts/ToastContext";
@@ -11,15 +11,15 @@ export default function LoginPage() {
     const router = useRouter();
     const toast = useToast();
 
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await auth.login(email, password);
             toast.success("Logged in successfully!");
-            router.navigate("home");
+            router.goAfterLogin();
         } catch (err) {
             toast.error(err.message);
         }

@@ -22,6 +22,22 @@ import AdminEditUserPage from "./pages/admin/AdminEditUserPage";
 import InterestGroupsPage from "./pages/admin/InterestGroupsPage";
 import DashboardPage from "./pages/admin/DashboardPage";
 
+// Pages that require authentication
+const authRequiredPages = [
+    "create-post",
+    "edit-post",
+    "my-notes",
+    "create-note",
+    "edit-note",
+    "dashboard",
+    "admin-notes",
+    "admin-users",
+    "admin-add-user",
+    "admin-edit-user",
+    "interest-groups",
+    "user-posts",
+];
+
 const pageMap = {
     home: HomePage,
     "create-post": CreatePostPage,
@@ -42,16 +58,30 @@ function App() {
     const auth = useAuth();
     const router = useRouter();
 
+    // Auth pages (login/register) — always accessible
+    if (router.page === "login") return <LoginPage />;
+    if (router.page === "register") return <RegisterPage />;
+
+    // Public pages — accessible without login
+    if (router.page === "home") {
+        return (
+            <div className="min-h-screen">
+                <Navbar />
+                <main>
+                    <HomePage />
+                </main>
+            </div>
+        );
+    }
+
+    // Auth-required pages — need to be logged in
     if (!auth.user) {
-        if (router.page === "register") return <RegisterPage />;
+        // Redirect to login, saving intended destination
+        router.requireAuth(router.page, router.params);
         return <LoginPage />;
     }
 
-    // Admin → go to dashboard by default, User → go to home
-    if (router.page === "home" && auth.isAdmin) {
-        // Optional: admin home redirects to dashboard
-    }
-
+    // Logged in — show full app
     const PageComp = pageMap[router.page] || HomePage;
 
     return (

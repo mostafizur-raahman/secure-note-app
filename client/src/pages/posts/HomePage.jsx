@@ -54,9 +54,8 @@ export default function HomePage() {
         fetchPosts(1);
     }, []);
 
-    // Admin → Edit/Del on ALL posts
-    // User  → Edit/Del on own posts only
     const canModify = (post) => {
+        if (!auth.user) return false;
         if (auth.isAdmin) return true;
         const myId = String(auth.user?.id || "");
         const authorId = String(
@@ -72,16 +71,21 @@ export default function HomePage() {
         return "Unknown";
     };
 
+    const handleCreatePost = () => {
+        if (!auth.user) {
+            router.requireAuth("create-post");
+        } else {
+            router.navigate("create-post");
+        }
+    };
+
     return (
         <div className="max-w-3xl mx-auto px-4 py-6">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold tracking-tight">
                     Posts Feed
                 </h2>
-                <Btn
-                    variant="primary"
-                    size="sm"
-                    onClick={() => router.navigate("create-post")}>
+                <Btn variant="primary" size="sm" onClick={handleCreatePost}>
                     + New Post
                 </Btn>
             </div>

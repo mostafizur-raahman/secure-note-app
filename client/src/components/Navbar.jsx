@@ -6,21 +6,51 @@ import Badge from "./ui/Badge";
 
 export default function Navbar() {
     const { user, logout, isAdmin } = useAuth();
-    const { navigate, page } = useRouter();
+    const { navigate, page, requireAuth } = useRouter();
     const [adminMenuOpen, setAdminMenuOpen] = useState(false);
 
     const handleLogout = () => {
         logout();
-        navigate("login");
+        navigate("home"); // Go to public home page after logout
     };
 
-    // Main nav — visible to everyone
+    // ── NOT LOGGED IN ──
+    if (!user) {
+        return (
+            <nav className="sticky top-0 z-30 bg-[#050505]/90 backdrop-blur-md border-b border-[#262626]/50">
+                <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+                    <span
+                        className="text-lg font-semibold tracking-tight cursor-pointer"
+                        onClick={() => navigate("home")}>
+                        Secure<span className="text-[#f97316]">Notes</span>
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <Btn
+                            variant="primary"
+                            size="sm"
+                            onClick={() => requireAuth("home")}>
+                            {" "}
+                            {/* ← Login then go home */}
+                            Login
+                        </Btn>
+                        <Btn
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => navigate("register")}>
+                            Register
+                        </Btn>
+                    </div>
+                </div>
+            </nav>
+        );
+    }
+
+    // ── LOGGED IN ──
     const mainNav = [
         { label: "Posts Feed", page: "home" },
         { label: "My Notes", page: "my-notes" },
     ];
 
-    // Admin nav — inside dropdown
     const adminNav = [
         { label: "Dashboard", page: "dashboard" },
         { label: "All Notes", page: "admin-notes" },
@@ -31,7 +61,6 @@ export default function Navbar() {
     return (
         <nav className="sticky top-0 z-30 bg-[#050505]/90 backdrop-blur-md border-b border-[#262626]/50">
             <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-                {/* Left: Logo + Main nav */}
                 <div className="flex items-center gap-4">
                     <span
                         className="text-lg font-semibold tracking-tight cursor-pointer"
@@ -40,8 +69,6 @@ export default function Navbar() {
                         }>
                         Secure<span className="text-[#f97316]">Notes</span>
                     </span>
-
-                    {/* Main nav items */}
                     <div className="hidden md:flex items-center gap-1">
                         {mainNav.map((i) => (
                             <Btn
@@ -57,8 +84,6 @@ export default function Navbar() {
                                 {i.label}
                             </Btn>
                         ))}
-
-                        {/* Create buttons */}
                         <Btn
                             variant="ghost"
                             size="sm"
@@ -82,7 +107,6 @@ export default function Navbar() {
                             + Note
                         </Btn>
 
-                        {/* Admin dropdown — only for admins */}
                         {isAdmin && (
                             <div className="relative">
                                 <Btn
@@ -98,8 +122,6 @@ export default function Navbar() {
                                     }>
                                     Admin ▾
                                 </Btn>
-
-                                {/* Dropdown menu */}
                                 {adminMenuOpen && (
                                     <div
                                         className="absolute top-full left-0 mt-1 bg-[#0a0a0a] border border-[#262626] rounded-xl py-2 min-w-[180px] shadow-lg anim-fadeIn"
@@ -109,11 +131,7 @@ export default function Navbar() {
                                         {adminNav.map((i) => (
                                             <button
                                                 key={i.page}
-                                                className={`w-full text-left px-4 py-2 text-sm transition-colors cursor-pointer ${
-                                                    page === i.page
-                                                        ? "text-[#f97316] bg-[#171717]"
-                                                        : "text-[#e5e5e5] hover:bg-[#171717]"
-                                                }`}
+                                                className={`w-full text-left px-4 py-2 text-sm cursor-pointer ${page === i.page ? "text-[#f97316] bg-[#171717]" : "text-[#e5e5e5] hover:bg-[#171717]"}`}
                                                 onClick={() => {
                                                     navigate(i.page);
                                                     setAdminMenuOpen(false);
@@ -127,8 +145,6 @@ export default function Navbar() {
                         )}
                     </div>
                 </div>
-
-                {/* Right: Role badge + Name + Logout */}
                 <div className="flex items-center gap-3">
                     <Badge variant={isAdmin ? "admin" : "user"}>
                         {user?.role === "ADMIN" ? "Admin" : "User"}
