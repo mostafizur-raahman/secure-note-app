@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "../../contexts/RouterContext";
 import { useToast } from "../../contexts/ToastContext";
@@ -17,11 +17,11 @@ export default function HomePage() {
     const router = useRouter();
     const toast = useToast();
 
-    const [posts, setPosts] = React.useState([]);
-    const [page, setPage] = React.useState(1);
-    const [totalPages, setTotalPages] = React.useState(1);
-    const [loading, setLoading] = React.useState(true);
-    const [deleteId, setDeleteId] = React.useState(null);
+    const [posts, setPosts] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [deleteId, setDeleteId] = useState(null);
 
     const fetchPosts = async (p) => {
         setLoading(true);
