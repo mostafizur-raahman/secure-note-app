@@ -11,10 +11,9 @@ export default function Navbar() {
 
     const handleLogout = () => {
         logout();
-        navigate("home"); // Go to public home page after logout
+        navigate("home");
     };
 
-    // ── NOT LOGGED IN ──
     if (!user) {
         return (
             <nav className="sticky top-0 z-30 bg-[#050505]/90 backdrop-blur-md border-b border-[#262626]/50">
@@ -45,7 +44,6 @@ export default function Navbar() {
         );
     }
 
-    // ── LOGGED IN ──
     const mainNav = [
         { label: "Posts Feed", page: "home" },
         { label: "My Notes", page: "my-notes" },
