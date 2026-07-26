@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+    client:
+        build:
+            context: ./client
+            dockerfile: Dockerfile
+        container_name: secure-notes-client
+        ports:
+            - "3000:80"
+        depends_on:
+            server:
+                condition: service_started
+        restart: unless-stopped
+
+    server:
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        container_name: secure-notes-server
+        ports:
+            - "8080:8080"
+        env_file:
+            - ./server/.env
+        depends_on:
+            mongo:
+                condition: service_healthy
+        restart: unless-stopped
+
+    mongo:
+        image: mongo:7
+        container_name: secure-notes-mongo
+        ports:
+            - "27018:27017"
+        volumes:
+            - mongo_data:/data/db
+        healthcheck:
+            test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 10s
+        restart: unless-stopped
+
+volumes:
+    mongo_data:
