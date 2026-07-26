@@ -1,14 +1,43 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/index.css";
+import { AuthProvider } from "./contexts/AuthContext";
+import { RouterProvider } from "./contexts/RouterContext";
+import { ToastProvider } from "./contexts/ToastContext";
+import { useAuth } from "./contexts/AuthContext";
+import { useRouter } from "./contexts/RouterContext";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+import WelcomePage from "./pages/auth/WelcomePage";
+
+function App() {
+    const auth = useAuth();
+    const router = useRouter();
+
+    // Not logged in → show auth pages
+    if (!auth.user) {
+        if (router.page === "register") return <RegisterPage />;
+        return <LoginPage />;
+    }
+
+    // Logged in → show welcome page
+    if (
+        router.page === "login" ||
+        router.page === "register" ||
+        router.page === "home"
+    ) {
+        return <WelcomePage />;
+    }
+
+    return <WelcomePage />;
+}
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-    <div className="min-h-screen flex items-center justify-center">
-        <h1 className="text-3xl font-semibold">
-            Secure<span className="text-[#f97316]">Notes</span>
-        </h1>
-        <p className="text-sm text-[#a3a3a3] mt-2">
-            Module 1 loaded — foundation ready ✓
-        </p>
-    </div>,
+    <AuthProvider>
+        <RouterProvider>
+            <ToastProvider>
+                <App />
+            </ToastProvider>
+        </RouterProvider>
+    </AuthProvider>,
 );
