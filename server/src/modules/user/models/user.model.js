@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema(
             required: true,
             lowercase: true,
             trim: true,
-            unique: true,
         },
         password: {
             type: String,
@@ -28,7 +27,10 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.index({ role: 1 });
-
+userSchema.index(
+    { email: 1 },
+    { unique: true, partialFilterExpression: { isDeleted: false } },
+);
 userSchema.index({ interests: 1 });
 
 userSchema.pre("save", async function () {

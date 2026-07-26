@@ -1,6 +1,6 @@
 import userService from "./user.service.js";
 
-export const getProfile = async (req, res, next) => {
+const getProfile = async (req, res, next) => {
     try {
         const userData = await userService.getProfile(req.user.id);
         res.status(200).json({
@@ -12,7 +12,7 @@ export const getProfile = async (req, res, next) => {
     }
 };
 
-export const getAllUsers = async (req, res, next) => {
+const getAllUsers = async (req, res, next) => {
     try {
         const usersData = await userService.getAllUsers(req.query);
         res.status(200).json({
@@ -24,7 +24,7 @@ export const getAllUsers = async (req, res, next) => {
     }
 };
 
-export const createUser = async (req, res, next) => {
+const createUser = async (req, res, next) => {
     try {
         const userData = await userService.createUser(req.body);
         res.status(201).json({
@@ -37,7 +37,7 @@ export const createUser = async (req, res, next) => {
     }
 };
 
-export const updateUser = async (req, res, next) => {
+const updateUser = async (req, res, next) => {
     try {
         const updatedUser = await userService.updateUser(
             req.params.id,
@@ -53,7 +53,7 @@ export const updateUser = async (req, res, next) => {
     }
 };
 
-export const updateMyProfile = async (req, res, next) => {
+const updateMyProfile = async (req, res, next) => {
     try {
         const updatedUser = await userService.updateMyProfile(
             req.user.id,
@@ -69,7 +69,7 @@ export const updateMyProfile = async (req, res, next) => {
     }
 };
 
-export const deleteUser = async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
     try {
         await userService.deleteUser(req.params.id);
         res.status(200).json({
@@ -81,7 +81,7 @@ export const deleteUser = async (req, res, next) => {
     }
 };
 
-export const getUsersGroupedByInterests = async (req, res, next) => {
+const getUsersGroupedByInterests = async (req, res, next) => {
     try {
         const data = await userService.getUsersGroupedByInterests(req.query);
         res.status(200).json({
