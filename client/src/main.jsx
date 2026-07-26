@@ -6,30 +6,38 @@ import { RouterProvider } from "./contexts/RouterContext";
 import { ToastProvider } from "./contexts/ToastContext";
 import { useAuth } from "./contexts/AuthContext";
 import { useRouter } from "./contexts/RouterContext";
+import Navbar from "./components/Navbar";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
-import WelcomePage from "./pages/auth/WelcomePage";
+import HomePage from "./pages/posts/HomePage";
+import CreatePostPage from "./pages/posts/CreatePostPage";
+import EditPostPage from "./pages/posts/EditPostPage";
+
+const pageMap = {
+    home: HomePage,
+    "create-post": CreatePostPage,
+    "edit-post": EditPostPage,
+};
 
 function App() {
     const auth = useAuth();
     const router = useRouter();
 
-    // Not logged in → show auth pages
     if (!auth.user) {
         if (router.page === "register") return <RegisterPage />;
         return <LoginPage />;
     }
 
-    // Logged in → show welcome page
-    if (
-        router.page === "login" ||
-        router.page === "register" ||
-        router.page === "home"
-    ) {
-        return <WelcomePage />;
-    }
+    const PageComp = pageMap[router.page] || HomePage;
 
-    return <WelcomePage />;
+    return (
+        <div className="min-h-screen">
+            <Navbar />
+            <main>
+                <PageComp />
+            </main>
+        </div>
+    );
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
