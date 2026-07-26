@@ -19,7 +19,7 @@ export default function LoginPage() {
         try {
             await auth.login(email, password);
             toast.success("Logged in successfully!");
-            router.navigate("home"); // Now works — user is set in context
+            router.navigate("home");
         } catch (err) {
             toast.error(err.message);
         }

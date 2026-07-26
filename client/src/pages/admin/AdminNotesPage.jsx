@@ -1,6 +1,6 @@
 import React from "react";
 import { useToast } from "../../contexts/ToastContext";
-import noteService from "../../services/noteService"; // Changed: uses noteService.getAll()
+import noteService from "../../services/noteService";
 import { extractList, extractTotalPages } from "../../utils/extractData";
 import Card from "../../components/ui/Card";
 import Badge from "../../components/ui/Badge";
