@@ -77,11 +77,28 @@ const softDeleteUserById = async (id) => {
     );
 };
 
-// Aggregation: Group users by interests
-const getUsersGroupedByInterests = async () => {
+const getUsersGroupedByInterests = async (interestFilter = null) => {
+    const matchStage = interestFilter
+        ? {
+              interests: { $regex: new RegExp(`^${interestFilter}$`, "i") },
+              isDeleted: false,
+          }
+        : { interests: { $exists: true, $ne: [] }, isDeleted: false };
+
     return await userModel.aggregate([
-        { $match: { interests: { $exists: true, $ne: [] } } },
+        { $match: matchStage },
         { $unwind: "$interests" },
+        ...(interestFilter
+            ? [
+                  {
+                      $match: {
+                          interests: {
+                              $regex: new RegExp(`^${interestFilter}$`, "i"),
+                          },
+                      },
+                  },
+              ]
+            : []),
         {
             $group: {
                 _id: "$interests",
@@ -106,7 +123,6 @@ const getUsersGroupedByInterests = async () => {
         },
     ]);
 };
-
 export default {
     createUser,
     findUserById,

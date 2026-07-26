@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRouter } from "../../contexts/RouterContext";
 import { useToast } from "../../contexts/ToastContext";
@@ -29,7 +29,6 @@ export default function HomePage() {
             const data = await postService.list(p);
             const list = extractList(data);
             setPosts(list);
-            // Pass currentPage so pagination never disappears on page 2+
             setTotalPages(extractTotalPages(data, list.length, p));
             setPage(p);
         } catch (err) {
@@ -51,14 +50,26 @@ export default function HomePage() {
         }
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetchPosts(1);
     }, []);
 
-    const isMyPost = (post) => {
-        const myId = auth.user?.id || auth.user?._id;
-        const authorId = post.author?.id || post.author?._id;
+    // Admin → Edit/Del on ALL posts
+    // User  → Edit/Del on own posts only
+    const canModify = (post) => {
+        if (auth.isAdmin) return true;
+        const myId = String(auth.user?.id || "");
+        const authorId = String(
+            post.author?.id || post.author?._id || post.author || "",
+        );
         return myId === authorId;
+    };
+
+    const getAuthorName = (post) => {
+        if (post.author?.name) return post.author.name;
+        if (post.author?.email) return post.author.email;
+        if (typeof post.author === "string") return "User";
+        return "Unknown";
     };
 
     return (
@@ -102,9 +113,7 @@ export default function HomePage() {
                                     </p>
                                     <div className="flex items-center gap-2 mt-3">
                                         <Badge variant="orange">
-                                            {post.author?.name ||
-                                                post.author?.email ||
-                                                "Unknown"}
+                                            {getAuthorName(post)}
                                         </Badge>
                                         <span className="text-xs text-[#525252]">
                                             {new Date(
@@ -113,7 +122,8 @@ export default function HomePage() {
                                         </span>
                                     </div>
                                 </div>
-                                {isMyPost(post) && (
+
+                                {canModify(post) && (
                                     <div className="flex gap-1">
                                         <Btn
                                             variant="ghost"

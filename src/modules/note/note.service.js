@@ -1,5 +1,6 @@
 import noteRepository from "./note.repository.js";
 import ApiError from "../../utils/error.js";
+import { UserRole } from "../../utils/role.enum.js";
 
 const createNote = async (noteData, userId) => {
     const newNote = await noteRepository.createNote({
@@ -59,7 +60,6 @@ const getNoteById = async (noteId, userId, userRole, isAdmin) => {
         throw new ApiError(404, "Note not found");
     }
 
-    // Users can only access their own. Admins can access any.
     if (!isAdmin && note.createdBy.toString() !== userId) {
         throw new ApiError(403, "You do not have access to this note");
     }
@@ -75,38 +75,29 @@ const getNoteById = async (noteId, userId, userRole, isAdmin) => {
     };
 };
 
-const updateNote = async (noteId, updateData, userId) => {
+const updateNote = async (noteId, updateData, userId, userRole) => {
     const note = await noteRepository.findNoteById(noteId);
+    if (!note) throw new ApiError(404, "Note not found");
 
-    if (!note) {
-        throw new ApiError(404, "Note not found");
-    }
-
-    if (note.createdBy.toString() !== userId) {
+    if (
+        userRole !== UserRole.Admin &&
+        note.createdBy._id.toString() !== userId
+    ) {
         throw new ApiError(403, "You can only update your own notes");
     }
 
-    const updated = await noteRepository.updateNoteById(noteId, {
-        ...updateData,
-        updatedBy: userId,
-    });
-
-    return {
-        id: updated._id,
-        title: updated.title,
-        content: updated.content,
-        updatedAt: updated.updatedAt,
-    };
+    const updated = await noteRepository.updateNoteById(noteId, updateData);
+    return updated;
 };
 
-const deleteNote = async (noteId, userId) => {
+const deleteNote = async (noteId, userId, userRole) => {
     const note = await noteRepository.findNoteById(noteId);
+    if (!note) throw new ApiError(404, "Note not found");
 
-    if (!note) {
-        throw new ApiError(404, "Note not found");
-    }
-
-    if (note.createdBy.toString() !== userId) {
+    if (
+        userRole !== UserRole.Admin &&
+        note.createdBy._id.toString() !== userId
+    ) {
         throw new ApiError(403, "You can only delete your own notes");
     }
 

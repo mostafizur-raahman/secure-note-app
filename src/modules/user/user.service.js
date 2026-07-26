@@ -106,8 +106,10 @@ const deleteUser = async (userId) => {
     return { message: "User deleted successfully" };
 };
 
-const getUsersGroupedByInterests = async () => {
-    return await userRepository.getUsersGroupedByInterests();
+const getUsersGroupedByInterests = async (query = {}) => {
+    const { interest } = query;
+    console.log("aaaaaaaaaaaaaaaaa", interest);
+    return await userRepository.getUsersGroupedByInterests(interest || null);
 };
 
 export default {

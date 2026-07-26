@@ -43,6 +43,7 @@ export const updatePost = async (req, res, next) => {
             req.params.id,
             req.body,
             req.user.id,
+            req.user.role,
         );
         res.status(200).json({
             success: true,
@@ -56,7 +57,7 @@ export const updatePost = async (req, res, next) => {
 
 export const deletePost = async (req, res, next) => {
     try {
-        await postService.deletePost(req.params.id, req.user.id);
+        await postService.deletePost(req.params.id, req.user.id, req.user.role);
         res.status(200).json({
             success: true,
             message: "Post deleted successfully",

@@ -1,6 +1,6 @@
 import noteService from "./note.service.js";
 
-export const createNote = async (req, res, next) => {
+const createNote = async (req, res, next) => {
     try {
         const note = await noteService.createNote(req.body, req.user.id);
         res.status(201).json({
@@ -13,7 +13,7 @@ export const createNote = async (req, res, next) => {
     }
 };
 
-export const getMyNotes = async (req, res, next) => {
+const getMyNotes = async (req, res, next) => {
     try {
         const data = await noteService.getMyNotes(req.user.id, req.query);
         res.status(200).json({
@@ -25,7 +25,7 @@ export const getMyNotes = async (req, res, next) => {
     }
 };
 
-export const getAllNotes = async (req, res, next) => {
+const getAllNotes = async (req, res, next) => {
     try {
         const data = await noteService.getAllNotes(req.query);
         res.status(200).json({
@@ -37,7 +37,7 @@ export const getAllNotes = async (req, res, next) => {
     }
 };
 
-export const getNoteById = async (req, res, next) => {
+const getNoteById = async (req, res, next) => {
     try {
         const note = await noteService.getNoteById(
             req.params.id,
@@ -54,12 +54,13 @@ export const getNoteById = async (req, res, next) => {
     }
 };
 
-export const updateNote = async (req, res, next) => {
+const updateNote = async (req, res, next) => {
     try {
         const note = await noteService.updateNote(
             req.params.id,
             req.body,
             req.user.id,
+            req.user.role,
         );
         res.status(200).json({
             success: true,
@@ -71,9 +72,9 @@ export const updateNote = async (req, res, next) => {
     }
 };
 
-export const deleteNote = async (req, res, next) => {
+const deleteNote = async (req, res, next) => {
     try {
-        await noteService.deleteNote(req.params.id, req.user.id);
+        await noteService.deleteNote(req.params.id, req.user.id, req.user.role);
         res.status(200).json({
             success: true,
             message: "Note deleted successfully",

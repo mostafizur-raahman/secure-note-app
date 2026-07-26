@@ -83,7 +83,7 @@ export const deleteUser = async (req, res, next) => {
 
 export const getUsersGroupedByInterests = async (req, res, next) => {
     try {
-        const data = await userService.getUsersGroupedByInterests();
+        const data = await userService.getUsersGroupedByInterests(req.query);
         res.status(200).json({
             success: true,
             data,

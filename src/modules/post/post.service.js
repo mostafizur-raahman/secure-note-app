@@ -1,5 +1,6 @@
 import postRepository from "./post.repository.js";
 import ApiError from "../../utils/error.js";
+import { UserRole } from "../../utils/role.enum.js";
 
 const createPost = async (postData, userId) => {
     const newPost = await postRepository.createPost({
@@ -44,11 +45,14 @@ const getPostById = async (postId) => {
     };
 };
 
-const updatePost = async (postId, updateData, userId) => {
+const updatePost = async (postId, updateData, userId, userRole) => {
     const post = await postRepository.findPostById(postId);
     if (!post) throw new ApiError(404, "Post not found");
 
-    if (post.createdBy._id.toString() !== userId) {
+    if (
+        userRole !== UserRole.Admin &&
+        post.createdBy._id.toString() !== userId
+    ) {
         throw new ApiError(403, "You can only update your own posts");
     }
 
@@ -61,11 +65,14 @@ const updatePost = async (postId, updateData, userId) => {
     };
 };
 
-const deletePost = async (postId, userId) => {
+const deletePost = async (postId, userId, userRole) => {
     const post = await postRepository.findPostById(postId);
     if (!post) throw new ApiError(404, "Post not found");
 
-    if (post.createdBy._id.toString() !== userId) {
+    if (
+        userRole !== UserRole.Admin &&
+        post.createdBy._id.toString() !== userId
+    ) {
         throw new ApiError(403, "You can only delete your own posts");
     }
 
