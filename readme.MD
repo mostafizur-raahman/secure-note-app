@@ -99,7 +99,6 @@ secure-note-app/
 │   └── app.js                   # Express app setup
 ├── server.js                    # Entry point
 ├── .env                         # Environment variables
-├── .env.docker                  # Docker-specific overrides
 ├── docker-compose.yml
 ├── Dockerfile
 └── package.json
@@ -131,7 +130,6 @@ npm run dev
 # Build and run all services
 docker-compose up --build
 
-# The server container uses .env.docker which points to mongo:27017
 ```
 
 ### Environment Variables
