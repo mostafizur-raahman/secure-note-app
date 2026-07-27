@@ -130,6 +130,12 @@ npm run dev
 # Build and run all services
 docker-compose up --build
 
+or using make file
+
+make up // run clent and server
+make down // remove images
+
+
 ```
 
 ### Environment Variables
@@ -138,6 +144,7 @@ docker-compose up --build
 | ---------------- | ------------------------- | --------------------------------------- |
 | `PORT`           | Server port               | `8080`                                  |
 | `DATABASE_URL`   | MongoDB connection string | `mongodb://localhost:27017/secure-note` |
+| `DATABASE_URL`   | for docker use service    | `mongodb://mongo:27017/secure-note`     |
 | `JWT_SECRET`     | Secret for signing JWTs   | `your_secret_key`                       |
 | `JWT_EXPIRES_IN` | Token expiry              | `1d`                                    |
 | `NODE_ENV`       | Environment mode          | `development`, `production`             |
@@ -277,13 +284,3 @@ npm start        # Start production
 ```
 
 ---
-
-## License
-
-MIT
-"""
-
-with open("/mnt/agents/output/README.md", "w") as f:
-f.write(readme_content)
-
-print("README.md saved successfully")
