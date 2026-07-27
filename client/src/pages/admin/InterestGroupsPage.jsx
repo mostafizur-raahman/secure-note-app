@@ -46,12 +46,7 @@ export default function InterestGroupsPage() {
             <h2 className="text-xl font-semibold tracking-tight mb-6">
                 Users Grouped by Interests <Badge variant="admin">Admin</Badge>
             </h2>
-            <p className="text-xs text-[#a3a3a3] mb-4">
-                MongoDB Aggregation — single collection.aggregate() call
-                grouping users by each interest
-            </p>
 
-            {/* Filter bar */}
             <div className="flex items-center gap-3 mb-6">
                 <label className="text-xs font-medium text-[#a3a3a3]">
                     Filter by interest:

@@ -30,7 +30,7 @@ export default function RegisterPage() {
                 interests: interestList,
             });
             toast.success("Account created! Please login now.");
-            router.navigate("login"); // Go to login page (no token from register)
+            router.navigate("login");
         } catch (err) {
             toast.error(err.message);
         }
@@ -53,7 +53,7 @@ export default function RegisterPage() {
                             label="Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="John Doe"
+                            placeholder="Mostafizur Rahman"
                             required
                         />
                         <Field
@@ -61,7 +61,7 @@ export default function RegisterPage() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="you@example.com"
+                            placeholder="mostafiz@gmail.com"
                             required
                         />
                         <Field

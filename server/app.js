@@ -9,11 +9,15 @@ import connect from "./src/config/database.js";
 import authRoutes from "./src/modules/auth/auth.route.js";
 import noteRoutes from "./src/modules/note/note.route.js";
 import postRoutes from "./src/modules/post/post.route.js";
+import seedData from "./src/modules/seeder/seeder.js";
 
 const app = express();
 
 // Database Connection
 connect();
+
+// Seed Data
+seedData();
 
 // middleware
 app.use(express.json());
