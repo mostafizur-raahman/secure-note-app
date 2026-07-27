@@ -33,13 +33,6 @@ A REST API for a secure note-taking platform with role-based access control, JWT
 - **Notes:** Private note-taking with ownership enforcement, soft delete, pagination
 - **Posts:** Public posts visible to everyone, owner-based edit/delete, `$lookup` aggregation
 
-### Aggregation Scenarios
-
-1. **Group by Interests** — `GET /users/interests/grouped`  
-   Groups all users by their interests using a single `aggregate()` call.
-2. **User Posts ($lookup)** — `GET /posts/user/:userId`  
-   Retrieves all posts by a specific user using `$lookup` to join the `Users` collection.
-
 ### Optimizations
 
 - Pagination on all list endpoints (`page`, `limit`, `sort`)
